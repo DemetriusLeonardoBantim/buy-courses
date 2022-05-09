@@ -2,15 +2,28 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
 import { DatabaseModule } from 'src/database/database.module';
-import { TestResolver } from './test.resolver';
-import path from 'node:path'
+import { ProductResolver } from './graphql/resolvers/products.resolver';
+import path from 'node:path';
 import { ApolloDriver } from '@nestjs/apollo';
+import { ProductsService } from 'src/services/product.service';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, GraphQLModule.forRoot({
-    driver: ApolloDriver,
-    autoSchemaFile: path.resolve(process.cwd(), 'src/schema.gql')
-  })],
-  providers: [TestResolver]
+  imports: [
+    ConfigModule.forRoot(),
+    DatabaseModule,
+    GraphQLModule.forRoot({
+      driver: ApolloDriver,
+      autoSchemaFile: path.resolve(process.cwd(), 'src/schema.gql'),
+    }),
+  ],
+  providers: [
+    //Services
+    ProductsService,
+    ProductsService,
+
+    //Resolvers
+    ProductResolver,
+    ProductResolver,
+  ],
 })
 export class HttpModule {}
