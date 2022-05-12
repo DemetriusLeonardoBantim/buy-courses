@@ -2,6 +2,10 @@ import { Injectable } from '@nestjs/common';
 import slugify from 'slugify';
 import { PrismaService } from 'src/database/prisma/prisma.service';
 
+interface CreateStudentParams{
+  authUserId:string
+}
+
 @Injectable()
 export class StudentsService {
   constructor(private prisma: PrismaService) {}
@@ -24,5 +28,13 @@ export class StudentsService {
         id,
       },
     });
+  }
+
+  createStudent({authUserId}:CreateStudentParams){
+    return this.prisma.student.create({
+      data: {
+        authUserId
+      }
+    })
   }
 }

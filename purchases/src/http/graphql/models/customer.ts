@@ -6,7 +6,6 @@ import { Purchase } from './purchase';
 @Directive('@key(fields: "authUserId")')
 @ObjectType()
 export class Customer {
-  @Field(() => ID)
   id: string;
 
   @Field(() => ID)

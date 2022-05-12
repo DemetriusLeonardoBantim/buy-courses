@@ -1,6 +1,3 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
 generator client {
   provider = "prisma-client-js"
 }
@@ -11,40 +8,29 @@ datasource db {
 }
 
 model Student {
-  id String @id @default(uuid())
-
-  authUserId String? @unique
-
+  id          String       @id @default(uuid())
+  authUserId  String?      @unique
   enrollments Enrollment[]
-
-  cretedAt  DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @default(now()) @updatedAt
 }
 
 model Course {
-  id String @id @default(uuid())
-
-  title String
-  slug  String @unique
-
+  id         String       @id @default(uuid())
+  title      String
+  slug       String       @unique
   enrolledOn Enrollment[]
-
-  cretedAt  DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
-
+  createdAt  DateTime     @default(now())
+  updatedAt  DateTime     @default(now()) @updatedAt
 }
 
 model Enrollment {
-  id String @id @default(uuid())
-
-
-  student   Student @relation(fields: [studentId], references: [id])
-  studentId String
-
-  course   Course @relation(fields: [courseId], references: [id])
-  courseId String
-
+  id         String    @id @default(uuid())
+  student    Student   @relation(fields: [studentId], references: [id])
+  studentId  String
+  course     Course    @relation(fields: [courseId], references: [id])
+  courseId   String
   canceledAt DateTime?
-  cretedAt   DateTime  @default(now())
+  createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now()) @updatedAt
 }
