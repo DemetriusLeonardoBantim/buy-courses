@@ -1,26 +1,35 @@
 import { UseGuards } from '@nestjs/common';
-import { Resolver, Mutation, ResolveField, Parent } from '@nestjs/graphql';
-import { AuthorizationGuard } from 'src/http/auth/authorization.guard';
-import { CustomersService } from 'src/services/customers.service';
-import { Customer } from '../models/customer';
+import {
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+  ResolveReference,
+} from '@nestjs/graphql';
+import { CustomersService } from '../../../services/customers.service';
+import { PurchasesService } from '../../../services/purchases.service';
+
+import { AuthorizationGuard } from '../../auth/authorization.guard';
 import { AuthUser, CurrentUser } from '../../auth/current-user';
-import { PurchasesService } from 'src/services/purchases.service';
+import { Customer } from '../models/customer';
 
 @Resolver(() => Customer)
 export class CustomerResolver {
   constructor(
-    private customerService: CustomersService,
+    private customersService: CustomersService,
     private purchasesService: PurchasesService,
   ) {}
 
   @UseGuards(AuthorizationGuard)
-  @Mutation(() => Customer)
+  @Query(() => Customer)
   me(@CurrentUser() user: AuthUser) {
-    return this.customerService.getCustomerByAuthUserId(user.sub);
+    return this.customersService.getCustomerByAuthUserId(user.sub);
   }
 
-  @ResolveField()
-  purchases(@Parent() customer: Customer) {
-    return this.purchasesService.listAllFromCustomer(customer.id);
+
+
+  @ResolveReference()
+  resolveReference(reference: { authUserId: string }) {
+    return this.customersService.getCustomerByAuthUserId(reference.authUserId);
   }
 }

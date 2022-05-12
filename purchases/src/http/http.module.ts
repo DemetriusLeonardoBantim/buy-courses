@@ -1,33 +1,41 @@
+import {
+  ApolloFederationDriver,
+  ApolloFederationDriverConfig,
+} from '@nestjs/apollo';
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { GraphQLModule } from '@nestjs/graphql';
-import { DatabaseModule } from 'src/database/database.module';
-import { ProductResolver } from './graphql/resolvers/products.resolver';
 import path from 'node:path';
-import { ApolloDriver } from '@nestjs/apollo';
-import { ProductsService } from 'src/services/product.service';
-import { CustomersService } from 'src/services/customers.service';
+
+import { DatabaseModule } from '../database/database.module';
+import { MessagingModule } from '../messaging/messaging.module';
+import { CustomersService } from '../services/customers.service';
+import { ProductsService } from '../services/product.service';
+import { PurchasesService } from '../services/purchases.service';
 import { CustomerResolver } from './graphql/resolvers/customers.resolver';
+import { ProductResolver } from './graphql/resolvers/products.resolver';
+import { PurchasesResolver } from './graphql/resolvers/purchases.resolver';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     DatabaseModule,
-    GraphQLModule.forRoot({
-      driver: ApolloDriver,
+    MessagingModule,
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
       autoSchemaFile: path.resolve(process.cwd(), 'src/schema.gql'),
     }),
   ],
   providers: [
-    //Services
-    ProductsService,
-    ProductsService,
-    CustomersService,
-
-    //Resolvers
+    // Resolvers
     ProductResolver,
-    ProductResolver,
+    PurchasesResolver,
     CustomerResolver,
+
+    // Services
+    ProductsService,
+    PurchasesService,
+    CustomersService,
   ],
 })
 export class HttpModule {}

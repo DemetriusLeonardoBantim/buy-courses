@@ -1,22 +1,22 @@
 import { UseGuards } from '@nestjs/common';
 import {
-  Resolver,
-  Query,
-  Mutation,
   Args,
-  ResolveField,
+  Mutation,
   Parent,
+  Query,
+  ResolveField,
+  Resolver,
 } from '@nestjs/graphql';
-import { AuthorizationGuard } from 'src/http/auth/authorization.guard';
-import { AuthUser, CurrentUser } from 'src/http/auth/current-user';
-import { CustomersService } from 'src/services/customers.service';
-import { ProductsService } from 'src/services/product.service';
-import { PurchasesService } from 'src/services/purchases.service';
-import { CreatePurchaseInput } from '../inputs/create-purchase-input-';
-import { Product } from '../models/product';
+import { CustomersService } from '../../../services/customers.service';
+import { ProductsService } from '../../../services/product.service';
+
+import { PurchasesService } from '../../../services/purchases.service';
+import { AuthorizationGuard } from '../../auth/authorization.guard';
+import { AuthUser, CurrentUser } from '../../auth/current-user';
+import {CreatePurchaseInput} from '../inputs/create-purchase-input-'
 import { Purchase } from '../models/purchase';
 
-@Resolver()
+@Resolver(() => Purchase)
 export class PurchasesResolver {
   constructor(
     private purchasesService: PurchasesService,
@@ -26,11 +26,11 @@ export class PurchasesResolver {
 
   @Query(() => [Purchase])
   @UseGuards(AuthorizationGuard)
-  products() {
+  purchases() {
     return this.purchasesService.listAllPurchases();
   }
 
-  @ResolveField(() => Product)
+  @ResolveField()
   product(@Parent() purchase: Purchase) {
     return this.productsService.getProductById(purchase.productId);
   }
